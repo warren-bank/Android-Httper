@@ -9,6 +9,9 @@
     <string name="main_view_method">Request Method</string>
     <string name="main_view_url_example">www.example.com</string>
     <string name="main_view_send_request">Send Request</string>
+    <string name="main_view_send_periodic_requests">Send Periodic Requests</string>
+    <string name="main_view_periodic_requests_interval_dialog_title">Interval:</string>
+    <string name="main_view_periodic_requests_interval_dialog_units">seconds</string>
     <string name="main_view_save_to_project">Save to Project</string>
     <string name="main_view_headers">Headers</string>
     <string name="main_view_params">Parameters</string>
@@ -66,6 +69,12 @@
     <string name="about_view_link">Visit our Homepage</string>
     <string name="about_view_github">Fork on Github</string>
     <string name="about_view_store">Rate on Play Store</string>
+
+    <!-- foreground service notification -->
+    <string name="notification_service_ticker">Httper: service running</string>
+    <string name="notification_service_content_line1">@string/app_name</string>
+    <string name="notification_service_content_line2">Periodic Requests</string>
+    <string name="notification_service_content_line3">Click to stop service.</string>
 
     <string-array name="methods_array">
         <item>GET</item>

@@ -35,9 +35,9 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:text="@string/main_view_method"
-            app:layout_constraintBottom_toBottomOf="@+id/spinnerMethods"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/spinnerMethods"/>
+            app:layout_constraintTop_toTopOf="@+id/spinnerMethods"
+            app:layout_constraintBottom_toBottomOf="@+id/spinnerMethods"/>
 
         <Spinner
             android:id="@+id/spinnerMethods"
@@ -91,10 +91,10 @@
             android:hint="@string/main_view_url_example"
             android:imeOptions="actionDone|flagNoExtractUi"
             android:inputType="textUri"
-            app:layout_constraintBottom_toBottomOf="@+id/spinnerHttp"
             app:layout_constraintLeft_toRightOf="@+id/spinnerHttp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/spinnerHttp"/>
+            app:layout_constraintTop_toTopOf="@+id/spinnerHttp"
+            app:layout_constraintBottom_toBottomOf="@+id/spinnerHttp"/>
 
         <View
             android:id="@+id/divider2"
@@ -118,10 +118,10 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/buttonSend"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider2">
+            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintBottom_toTopOf="@+id/buttonSend">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -145,21 +145,38 @@
             android:background="@drawable/bg_button"
             android:enabled="false"
             android:text="@string/main_view_send_request"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/buttonSendPeriodic"/>
 
-        <!--<Button-->
-        <!--android:id="@+id/buttonSave"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:layout_marginLeft="8dp"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--android:background="@drawable/bg_button"-->
-        <!--android:text="@string/main_view_save_to_project"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toLeftOf="@+id/buttonSend"/>-->
+        <!--
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_button"
+            android:text="@string/main_view_save_to_project"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/buttonSend"
+            app:layout_constraintBottom_toTopOf="@+id/buttonSendPeriodic"/>
+        -->
+
+        <Button
+            android:id="@+id/buttonSendPeriodic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/bg_button"
+            android:enabled="false"
+            android:text="@string/main_view_send_periodic_requests"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

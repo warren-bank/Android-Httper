@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.mushare.httper.AbstractRequestSettingListItem.RequestSettingType;
 import org.mushare.httper.dialog.ClearRequestDialog;
+import org.mushare.httper.dialog.PeriodicRequestsIntervalDialog;
 import org.mushare.httper.dialog.RequestRawBodyDialog;
 import org.mushare.httper.entity.DaoSession;
 import org.mushare.httper.entity.RequestRecord;
@@ -80,9 +81,9 @@ public class MainFragment extends Fragment {
         spinnerMethod = view.findViewById(R.id.spinnerMethods);
         spinnerHttp = view.findViewById(R.id.spinnerHttp);
         editTextUrl = view.findViewById(R.id.editTextUrl);
-        AutofitHelper.create(editTextUrl).setMinTextSize(TypedValue.COMPLEX_UNIT_SP, 14)
-                .setPrecision(0.1f);
+        AutofitHelper.create(editTextUrl).setMinTextSize(TypedValue.COMPLEX_UNIT_SP, 14).setPrecision(0.1f);
         final Button buttonSend = view.findViewById(R.id.buttonSend);
+        final Button buttonSendPeriodic = view.findViewById(R.id.buttonSendPeriodic);
 
         editTextUrl.addTextChangedListener(new TextWatcher() {
             @Override
@@ -92,9 +93,14 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0 && HttpUrl.parse("http://" + s) != null)
+                if (s.length() > 0 && HttpUrl.parse("http://" + s) != null) {
                     buttonSend.setEnabled(true);
-                else buttonSend.setEnabled(false);
+                    buttonSendPeriodic.setEnabled(true);
+                }
+                else {
+                    buttonSend.setEnabled(false);
+                    buttonSendPeriodic.setEnabled(false);
+                }
             }
 
             @Override
@@ -199,28 +205,12 @@ public class MainFragment extends Fragment {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                insertOrReplaceRequestRecord();
+
                 ArrayList<MyPair> header = getHeaders();
                 if (!checkHeader(header)) {
                     return;
                 }
-
-                RequestRecord requestRecord = new RequestRecord();
-                requestRecord.setCreateAt(System.currentTimeMillis());
-                requestRecord.setMethod(spinnerMethod.getSelectedItem().toString());
-                requestRecord.setHttp(spinnerHttp.getSelectedItem().toString());
-                requestRecord.setUrl(editTextUrl.getText().toString());
-                requestRecord.setHeaders(pairListToJSONArray(header).toString());
-                requestRecord.setParameters(pairListToJSONArray(getParameters()).toString());
-                requestRecord.setBody(body);
-                requestRecordDao.queryBuilder().where(RequestRecordDao.Properties.Method.eq
-                        (requestRecord.getMethod()), RequestRecordDao.Properties.Http.eq
-                        (requestRecord.getHttp()), RequestRecordDao.Properties.Url.eq
-                        (requestRecord.getUrl()), RequestRecordDao.Properties.Headers.eq
-                        (requestRecord.getHeaders()), RequestRecordDao.Properties.Parameters.eq
-                        (requestRecord.getParameters()), RequestRecordDao.Properties.Body.eq
-                        (requestRecord.getBody())).buildDelete()
-                        .executeDeleteWithoutDetachingEntities();
-                requestRecordDao.insert(requestRecord);
 
                 Intent intent = new Intent(getContext(), ResponseActivity.class);
                 intent.putExtra("method", spinnerMethod.getSelectedItem().toString());
@@ -230,6 +220,15 @@ public class MainFragment extends Fragment {
                 intent.putExtra("parameter", getParameters());
                 intent.putExtra("body", body);
                 startActivity(intent);
+            }
+        });
+
+        buttonSendPeriodic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new PeriodicRequestsIntervalDialog();
+                newFragment.setTargetFragment(MainFragment.this, 0);
+                newFragment.show(getFragmentManager(), "dialog");
             }
         });
 
@@ -279,6 +278,33 @@ public class MainFragment extends Fragment {
             }
         }
         return true;
+    }
+
+    public long insertOrReplaceRequestRecord() {
+        ArrayList<MyPair> header = getHeaders();
+        if (!checkHeader(header)) {
+            return -1L;
+        }
+
+        RequestRecord requestRecord = new RequestRecord();
+        requestRecord.setCreateAt(System.currentTimeMillis());
+        requestRecord.setMethod(spinnerMethod.getSelectedItem().toString());
+        requestRecord.setHttp(spinnerHttp.getSelectedItem().toString());
+        requestRecord.setUrl(editTextUrl.getText().toString());
+        requestRecord.setHeaders(pairListToJSONArray(header).toString());
+        requestRecord.setParameters(pairListToJSONArray(getParameters()).toString());
+        requestRecord.setBody(body);
+
+        requestRecordDao.queryBuilder().where(RequestRecordDao.Properties.Method.eq
+                (requestRecord.getMethod()), RequestRecordDao.Properties.Http.eq
+                (requestRecord.getHttp()), RequestRecordDao.Properties.Url.eq
+                (requestRecord.getUrl()), RequestRecordDao.Properties.Headers.eq
+                (requestRecord.getHeaders()), RequestRecordDao.Properties.Parameters.eq
+                (requestRecord.getParameters()), RequestRecordDao.Properties.Body.eq
+                (requestRecord.getBody())).buildDelete()
+                .executeDeleteWithoutDetachingEntities();
+
+        return requestRecordDao.insert(requestRecord);
     }
 
     public void clearAll() {

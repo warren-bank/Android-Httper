@@ -1,5 +1,6 @@
 package org.mushare.httper.utils;
 
+import java.io.IOException;
 import java.util.List;
 import java.security.Security;
 
@@ -8,6 +9,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.internal.Util;
 import org.conscrypt.Conscrypt;
 
@@ -23,11 +25,23 @@ public class RestClient {
     }
     private static OkHttpClient client = new OkHttpClient();
 
+    public static final Callback defaultCallback = new Callback() {
+        @Override
+        public void onResponse(Call call, Response response) {
+            RestClient.cancel(call);
+        }
+
+        @Override
+        public void onFailure(Call call, IOException e) {
+            RestClient.cancel(call);
+        }
+    };
+
     public static Call get(String url, List<MyPair> headers, Callback callback) {
         Request request = new Request.Builder().url(url).headers(phaseHeaders(headers)).get()
                 .build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue((callback != null) ? callback : RestClient.defaultCallback);
         return call;
     }
 
@@ -35,7 +49,7 @@ public class RestClient {
         Request request = new Request.Builder().url(url).headers(phaseHeaders(headers)).post
                 (body == null ? Util.EMPTY_REQUEST : RequestBody.create(null, body)).build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue((callback != null) ? callback : RestClient.defaultCallback);
         return call;
     }
 
@@ -43,7 +57,7 @@ public class RestClient {
         Request request = new Request.Builder().url(url).headers(phaseHeaders(headers)).head()
                 .build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue((callback != null) ? callback : RestClient.defaultCallback);
         return call;
     }
 
@@ -51,7 +65,7 @@ public class RestClient {
         Request request = new Request.Builder().url(url).headers(phaseHeaders(headers)).put
                 (body == null ? Util.EMPTY_REQUEST : RequestBody.create(null, body)).build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue((callback != null) ? callback : RestClient.defaultCallback);
         return call;
     }
 
@@ -59,7 +73,7 @@ public class RestClient {
         Request request = new Request.Builder().url(url).headers(phaseHeaders(headers)).delete
                 (body == null ? null : RequestBody.create(null, body)).build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue((callback != null) ? callback : RestClient.defaultCallback);
         return call;
     }
 
@@ -67,8 +81,15 @@ public class RestClient {
         Request request = new Request.Builder().url(url).headers(phaseHeaders(headers)).patch
                 (body == null ? Util.EMPTY_REQUEST : RequestBody.create(null, body)).build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue((callback != null) ? callback : RestClient.defaultCallback);
         return call;
+    }
+
+    public static boolean cancel(Call call) {
+        boolean should_cancel = (call != null) && call.isExecuted() && !call.isCanceled();
+        if (should_cancel)
+            call.cancel();
+        return should_cancel;
     }
 
 }
