@@ -7,11 +7,8 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:7.3.1'              // https://mvnrepository.com/artifact/com.android.tools.build/gradle?repo=google
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0'       // https://mvnrepository.com/artifact/org.greenrobot/greendao-gradle-plugin
     }
 }
 
